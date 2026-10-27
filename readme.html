@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>游戏说明 · 档案保护大冒险</title>
+<style>
+:root{--paper:#fbf8ef;--ink:#354337;--green:#536b50;--danger:#b34a3c}
+*{box-sizing:border-box}
+body{margin:0;background:#eee9dc;color:#332f28;font-family:"PingFang SC","Microsoft YaHei",sans-serif;-webkit-text-size-adjust:100%;line-height:1.7}
+.container{max-width:700px;margin:0 auto;padding:20px}
+.card{background:var(--paper);border:2px solid #d6d0bd;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.05);margin-bottom:20px}
+h1{margin:0 0 8px;color:#344735;font:bold clamp(24px,5vw,32px) Georgia,"Songti SC",serif;text-align:center}
+.sub{text-align:center;font-size:13px;color:#77725f;margin-bottom:20px}
+h2{font-size:18px;color:#536b50;border-bottom:2px solid #d4cfbc;padding-bottom:8px;margin-top:24px}
+h3{font-size:15px;color:#3b4b39;margin-bottom:6px}
+p{margin:8px 0;font-size:14.5px}
+.highlight{color:var(--danger);font-weight:bold}
+.btn-start{display:block;width:100%;padding:16px;background:var(--green);color:#fff;text-align:center;text-decoration:none;border-radius:12px;font-size:18px;font-weight:bold;letter-spacing:1px;box-shadow:0 4px 12px rgba(83,107,80,0.4);transition:transform 0.1s;margin-top:20px;}
+.btn-start:active{transform:scale(0.98)}
+.step-list{list-style:none;padding:0;margin:0;}
+.step-list li{display:flex;gap:12px;margin-bottom:16px;align-items:flex-start;}
+.step-num{flex-shrink:0;width:28px;height:28px;background:#536b50;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;margin-top:2px}
+.step-txt{flex:1;font-size:14.5px}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:bold;margin-right:6px}
+.t-know{background:#e5ebdc;color:#3d503d}
+.t-event{background:#f2ded6;color:#8a4035}
+.t-action{background:#dce7f1;color:#3d6d96}
+.t-special{background:#f6ebc9;color:#8a6a1e}
+.mobile-tip{background:#fff3cd;border:1px solid #ffe69c;color:#856404;padding:12px;border-radius:8px;font-size:14px;margin-top:16px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>✧ 档案保护大冒险</h1>
+    <div class="sub">单人闯关 · 72 格长线探险 · 守护记忆</div>
+    
+    <p style="text-align:center; font-weight:bold; color:var(--danger); font-size:16px;">目标：拥有 3 点档案耐久，抵达第 72 格终点！</p>
+
+    <div class="mobile-tip">
+      📱 <b>手机端特别提示：</b><br>
+      棋盘较大，在手机上可以<b>左右滑动</b>查看全貌。为了避免忘记操作，游戏界面下方会有一个<b>悬浮提示条</b>，告诉你当前该做什么（比如“点击掷骰子”或“点击抽卡”）。
+    </div>
+
+    <h2>🎲 核心玩法：每回合 3 步</h2>
+    <ul class="step-list">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-txt"><b>选择策略并掷骰</b><br>掷骰前，先选稳妥、探查或冒险。点击“🎲 掷骰子”前进。</div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-txt"><b>处理脚下格子</b><br>停在哪个格，就按提示处理。如果是卡牌格，一定要记得点击<span class="highlight">「抽取当前格卡牌」</span>！</div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-txt"><b>结算移动并结束回合</b><br>答对、答错或遇到事件后，系统会弹窗告诉你“前进/后退几格”，点击确认后本回合结束，开始下一回合。</div>
+      </li>
+    </ul>
+
+    <h2>🗺️ 四类卡牌与格子</h2>
+    <p><span class="tag t-know">📖 知识</span> 四选一。答对按难度前进并加连对，答错会扣耐久并后退。</p>
+    <p><span class="tag t-event">⚠️ 事件</span> 两难抉择。选安全项可能后退，选冒险项可能前进但扣血。</p>
+    <p><span class="tag t-action">🛡️ 保护</span> 收入背包。在关键时机（如即将后退时）点击侧边栏的“使用”来抵消惩罚。</p>
+    <p><span class="tag t-special">🔎 任务</span> 多选题。选出所有正确选项才算完成，完成前进，失败扣耐久后退。</p>
+    <p><span style="background:#f4f1e6;border:1px dashed #9c9582;padding:2px 8px;border-radius:6px;font-size:12px">空地/加速/陷阱</span> 直接结算，无答题。加速额外前进，陷阱后退。</p>
+
+    <h2>⚙️ 策略与难度</h2>
+    <p>🔹 <b>稳妥：</b>正常掷 1-6。</p>
+    <p>🔹 <b>探查：</b>掷 1-3，若踩到知识或任务格，额外送 1 张保护卡。</p>
+    <p>🔹 <b>冒险：</b>掷 4-6，但若踩到事件格，所有的负面效果（扣血/后退）翻倍！</p>
+    <p style="margin-top:10px; font-size:13px; color:#777;">* 游戏过程中可以随时在右上角切换难度（轻松/标准/挑战），影响答题奖惩和事件负面幅度。切换不会重置进度。</p>
+
+    <a href="./index.html" class="btn-start">进入档案室，开始探险 →</a>
+  </div>
+</div>
+</body>
+</html>
