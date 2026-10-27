@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>档案保护大冒险 · 单人闯关（72格）</title>
 <style>
 :root{--paper:#fbf8ef;--ink:#354337;--green:#536b50;--red:#c96f60;--yellow:#e6c46f;--blue:#7ea6c8;--sage:#91a783;--danger:#b34a3c}
 *{box-sizing:border-box}
-body{margin:0;background:#eee9dc;color:#332f28;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+body{margin:0;background:#eee9dc;color:#332f28;font-family:"PingFang SC","Microsoft YaHei",sans-serif;-webkit-text-size-adjust:100%}
 button,select,input{font:inherit}
-button{cursor:pointer;border:1px solid #a8ad97;background:#fffdf7;color:#344535;border-radius:9px;padding:8px 11px;font-weight:650}
+button{cursor:pointer;border:1px solid #a8ad97;background:#fffdf7;color:#344535;border-radius:9px;padding:8px 11px;font-weight:650;touch-action:manipulation}
 button:disabled{opacity:.4;cursor:not-allowed}
 .primary{background:var(--green);color:#fff;border-color:var(--green)}
 .primary.danger{background:var(--danger);border-color:var(--danger)}
@@ -22,9 +22,23 @@ main{max-width:1500px;margin:auto;padding:14px;display:grid;grid-template-column
 .head h2{font-size:15px;margin:0;color:#3d503d}
 .body{padding:12px}
 .tag{font-size:11px;background:#e9e5d7;border-radius:20px;padding:4px 8px;color:#655f4e;white-space:nowrap}
-/* 棋盘 */
-.board{padding:8px;background:#fffef9;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
-.tile{border:1.4px solid #596650;border-radius:7px;min-width:0;min-height:58px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+
+/* ======== 棋盘外框与自适应滑动 ======== */
+.board-wrapper {
+  width: 100%;
+  overflow-x: auto; /* 手机端横向滚动 */
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+.board{
+  padding: 8px;
+  background:#fffef9;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  min-width: 640px; /* 强制棋盘最小宽度，防止在手机上被压扁 */
+}
+.tile{border:1.4px solid #596650;border-radius:7px;min-width:0;min-height:58px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:transform 0.2s}
 .tile .ico{font-size:clamp(13px,1.7vw,19px);line-height:1}
 .tile .lab{font-size:9px;font-weight:bold;color:#3e4938;margin-top:2px;text-align:center;line-height:1.1}
 .tile .num{position:absolute;top:1px;left:3px;font-size:8px;color:#7a7563;font-weight:bold}
@@ -35,10 +49,11 @@ main{max-width:1500px;margin:auto;padding:14px;display:grid;grid-template-column
 .tile.boost{background:#fbe7b5;border-color:#c9a14a}
 .tile.trap{background:#f3c9c2;border-color:#b06a5c}
 .tile.startend{background:#e2e8d8;border:2px solid var(--green);border-radius:50%}
-.tile.current{outline:3px solid #ba8753;outline-offset:0;box-shadow:0 0 0 3px #ba875355}
+.tile.current{outline:3px solid #ba8753;outline-offset:0;box-shadow:0 0 0 3px #ba875355;z-index:2}
 .legend{display:flex;gap:9px;flex-wrap:wrap;font-size:11px;color:#746f60;padding:0 12px 10px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:3px}
-/* 侧栏 */
+
+/* ======== 侧栏与操作区 ======== */
 .sidebar{display:flex;flex-direction:column;gap:14px}
 .hud{display:flex;gap:8px;align-items:center;background:#f3efdf;padding:10px;border-radius:11px;margin-bottom:10px;flex-wrap:wrap}
 .die{width:50px;height:50px;display:grid;place-items:center;background:#fffef9;border:2px solid #9eaa91;border-radius:12px;font-size:29px;flex:0 0 auto}
@@ -53,6 +68,7 @@ main{max-width:1500px;margin:auto;padding:14px;display:grid;grid-template-column
 .ppos{font-size:12px;color:#77725f}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
 .status{font-size:12.5px;line-height:1.55;background:#edf1e7;border-left:4px solid var(--green);padding:9px 11px;border-radius:0 9px 9px 0;margin-top:9px;min-height:40px}
+
 /* 策略按钮 */
 .strats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
 .strat{padding:7px 4px;font-size:11px;line-height:1.3;text-align:center;border-radius:9px}
@@ -61,19 +77,20 @@ main{max-width:1500px;margin:auto;padding:14px;display:grid;grid-template-column
 .strat.probe{border-color:#91a783}.strat.probe b{color:#4c6b3c}
 .strat.risk{border-color:#c96f60}.strat.risk b{color:#a3453a}
 .strat.sel{outline:3px solid #ba8753;outline-offset:0;background:#f3e7cf}
-/* 背包 */
+
+/* 背包与日志 */
 .inv{display:flex;flex-direction:column;gap:6px;margin-top:4px}
 .invcard{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border:1px solid #d6d0bd;border-radius:9px;background:#fffdf7;font-size:12px}
 .invcard .t{font-weight:700;color:#3d503d}
 .invcard .d{color:#77725f;font-size:11px;margin-top:1px}
 .invcard button{padding:5px 8px;font-size:11.5px}
-/* 日志 */
 .log{max-height:150px;overflow:auto;font-size:11.5px;line-height:1.55;color:#6f6958}
 .log div{padding:3px 0;border-bottom:1px dashed #e1dac8}
+
 /* 弹窗 */
 .overlay{position:fixed;inset:0;background:#20261dcc;display:none;align-items:center;justify-content:center;padding:14px;z-index:10}
 .overlay.show{display:flex}
-.modal{width:min(580px,100%);max-height:92vh;overflow-y:auto;background:#fbf5e5;border:3px solid #536b50;border-radius:18px;padding:20px;position:relative;box-shadow:0 20px 60px #0006}
+.modal{width:min(580px,100%);max-height:90vh;overflow-y:auto;background:#fbf5e5;border:3px solid #536b50;border-radius:18px;padding:20px;position:relative;box-shadow:0 20px 60px #0006}
 .modal:before{content:"";position:absolute;inset:6px;border:1px solid #b9ad8b;border-radius:11px;pointer-events:none}
 .mtype,.mnum,.modal h3,.mtext,.opts,.answer,.mbtns,.hint{position:relative}
 .mtype{font-size:12px;color:#536b50;font-weight:800}
@@ -88,6 +105,7 @@ main{max-width:1500px;margin:auto;padding:14px;display:grid;grid-template-column
 .answer{margin-top:10px;background:#e8eddf;border:1px dashed #9aa78b;padding:10px;border-radius:9px;line-height:1.65;white-space:pre-line;font-size:13px}
 .mbtns{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;justify-content:center}
 .hint{font-size:12px;color:#77715f;margin-top:8px;white-space:pre-line;text-align:center;}
+
 /* 开局 */
 .setup{position:fixed;inset:0;background:#20261dcc;display:flex;align-items:center;justify-content:center;padding:14px;z-index:20;overflow-y:auto}
 .setup.hidden{display:none}
@@ -103,14 +121,35 @@ main{max-width:1500px;margin:auto;padding:14px;display:grid;grid-template-column
 .result-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #d8d2c0;font-size:13.5px}
 .result-row b{color:#3d503d}
 footer{text-align:center;color:#817a68;font-size:11px;padding:0 14px 16px}
-@media(max-width:900px){main{grid-template-columns:1fr}}
-@media(max-width:560px){
- main{padding:7px;gap:8px}
- .board{padding:4px;gap:3px}
- .tile{min-height:44px;border-radius:5px}
- .tile .lab{font-size:7.5px}.tile .ico{font-size:13px}.tile .num{font-size:7px}
- .body{padding:9px}.die{width:44px;height:44px;font-size:24px}
- .strat{padding:6px 3px;font-size:10px}.strat b{font-size:11.5px}
+
+/* ======== 手机端专属适配 (Media Queries) ======== */
+@media(max-width: 850px){
+  main{grid-template-columns:1fr}
+  .board-wrapper{ margin: 0 -12px; padding: 0 12px; } /* 让滑动更自然 */
+  /* 在手机上，让侧边栏的顺序调整为优先显示操作区，再显示棋盘，再显示记录 */
+  .sidebar { display: contents; } /* 打破 flex 结构 */
+  .panel.board-panel { order: 1; }
+  .panel.status-panel { order: 2; margin-top: 14px; }
+  .panel.inv-panel { order: 3; margin-top: 14px; }
+  .panel.log-panel { order: 4; margin-top: 14px; }
+  .panel.rules-panel { order: 5; margin-top: 14px; }
+}
+
+@media(max-width: 560px){
+  header { padding: 10px 14px; }
+  main { padding: 8px; gap: 8px; }
+  .body { padding: 9px; }
+  .die { width: 44px; height: 44px; font-size: 24px; }
+  
+  .tile { min-height: 48px; border-radius: 5px; }
+  .tile .lab { font-size: 8px; }
+  .tile .ico { font-size: 14px; }
+  .tile .num { font-size: 7px; }
+  
+  .strat { padding: 6px 3px; font-size: 10px; }
+  .strat b { font-size: 11.5px; }
+  
+  .actions button { padding: 12px 8px; font-size: 15px; } /* 加大移动端按钮点击面积 */
 }
 </style>
 </head>
@@ -129,9 +168,13 @@ footer{text-align:center;color:#817a68;font-size:11px;padding:0 14px 16px}
 </header>
 
 <main>
-  <section class="panel">
+  <!-- 棋盘部分 -->
+  <section class="panel board-panel">
     <div class="head"><h2>✦ 蛇形探险路线</h2><span class="tag" id="boardTag">72 个路线格</span></div>
-    <div class="board" id="board"></div>
+    <!-- 增加 wrapper 用于手机横向滑动 -->
+    <div class="board-wrapper">
+      <div class="board" id="board"></div>
+    </div>
     <div class="legend">
       <span><i style="background:#e5ebdc"></i>知识</span>
       <span><i style="background:#f2ded6"></i>事件</span>
@@ -154,7 +197,8 @@ footer{text-align:center;color:#817a68;font-size:11px;padding:0 14px 16px}
   </section>
 
   <aside class="sidebar">
-    <section class="panel">
+    <!-- 状态与操作区 -->
+    <section class="panel status-panel">
       <div class="head"><h2>✦ 探险状态</h2><span class="tag" id="turnTag">准备开始</span></div>
       <div class="body">
         <div class="hud">
@@ -183,17 +227,17 @@ footer{text-align:center;color:#817a68;font-size:11px;padding:0 14px 16px}
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel inv-panel">
       <div class="head"><h2>✦ 行动卡背包</h2><span class="tag" id="invTag">0 张</span></div>
       <div class="body"><div id="inventory" class="inv"><div class="smalltxt">尚未获得保护行动卡。</div></div></div>
     </section>
 
-    <section class="panel">
+    <section class="panel log-panel">
       <div class="head"><h2>✦ 探险记录</h2><button id="clearLog" style="padding:4px 7px;font-size:11px">清空</button></div>
       <div class="body"><div class="log" id="log"><div>等待探险开始……</div></div></div>
     </section>
 
-    <section class="panel">
+    <section class="panel rules-panel">
       <div class="head"><h2>✦ 快速规则</h2><span class="tag" id="quickDiff">标准</span></div>
       <div class="body" style="font-size:12.5px;line-height:1.75" id="quickRules"></div>
     </section>
@@ -549,7 +593,6 @@ function eventMoveValue(base){
   return base;
 }
 
-/* 核心修改：移动前弹窗确认 */
 function showMovePrompt(title, text, isDanger, onConfirm){
   $("moveType").textContent = isDanger ? "⚠️ 警示" : "移动结算";
   $("moveTitle").textContent = title;
@@ -557,7 +600,6 @@ function showMovePrompt(title, text, isDanger, onConfirm){
   $("moveConfirmBtn").className = "primary" + (isDanger ? " danger" : "");
   $("moveOverlay").classList.add("show");
 
-  // 解绑旧的点击事件，防止叠加
   const btn = $("moveConfirmBtn");
   const newBtn = btn.cloneNode(true);
   btn.parentNode.replaceChild(newBtn, btn);
@@ -619,7 +661,6 @@ function roll(){
   $("die").textContent = face[n-1];
   $("dieCaption").textContent = `掷出 ${n} 点`;
 
-  // 加上弹窗提示
   showMovePrompt("掷骰结果", `你掷出了 ${n} 点，将从第 ${old} 格前进到第 ${targetPos} 格。`, false, ()=>{
     player.pos = targetPos;
     addLog(`${player.name} 掷出 ${n} 点：${old === 0 ? "起点" : old + "格"} → ${player.pos >= TOTAL_TILES ? "终点" : player.pos + "格"}。`);
@@ -634,7 +675,6 @@ function roll(){
       if(!over) finishTurn(); return;
     }
     if(typ === "boost"){
-      // 加速格移动前弹窗
       showMovePrompt("⚡ 踩到加速格", `本格效果：额外前进 2 格。即将移动。`, false, ()=>{
         addLog(`⚡ 第 ${player.pos} 格加速：额外前进 2 格。`);
         if(!moveBy(2, "加速格")) finishTurn();
@@ -642,7 +682,6 @@ function roll(){
       return;
     }
     if(typ === "trap"){
-      // 陷阱格移动前弹窗
       showMovePrompt("🕳️ 踩到陷阱格", `本格效果：后退 1 格。即将移动。`, true, ()=>{
         addLog(`🕳️ 第 ${player.pos} 格陷阱：后退 1 格。`);
         if(!moveBy(-1, "陷阱格")) finishTurn();
